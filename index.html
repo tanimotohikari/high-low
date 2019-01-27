@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+  <title>high-low</title>
+</head>
+<script>
+  window.onload = function() {
+    const comparison = document.getElementById('comparison-number');
+    const highLow = document.getElementById('high-low');
+    const left = document.getElementById('left');
+    const correct = document.getElementById('correct');
+    const incorrect = document.getElementById('incorrect');
+    const easy = document.getElementById('level-easy');
+    const normal = document.getElementById('level-normal');
+    const hard = document.getElementById('level-hard');
+
+    let random = 0;
+    let selectNumber = 0;
+    let comparisonNumber = 0;
+    let highLowStatus = true; // highLowの値が「大きい」場合はtrue
+    // 正解、不正解数のカウント
+    let correctCount = 0;
+    let incorrectCount = 0;
+    // ゲームレベルの選択
+    let levelSetting = 1;
+
+    comparison.innerHTML = Math.floor(Math.random() * 10);
+    left.innerHTML = Math.floor(Math.random() * 10);
+
+    function createNumber() {
+      random = Math.floor(Math.random() * 10);
+      comparisonNumber = Math.floor(Math.random() * 10);
+      comparison.innerHTML = comparisonNumber;
+    }
+
+    function changeNumber() {
+      if(levelSetting === 1) {
+        left.innerHTML = random;
+      } else if(levelSetting === 2) {
+        left.innerHTML = random * random;
+      } else {
+        left.innerHTML = random * random * random;
+      }
+    }
+
+    function changeLevel() {
+      if(this.getAttribute('id') === 'level-easy') {
+        levelSetting = 1;
+      } else if(this.getAttribute('id') === 'level-normal') {
+        levelSetting = 2;
+      } else {
+        levelSetting = 3;
+      }
+    }
+
+    function changeHighLow() {
+      if(random > 4) {
+        highLow.innerHTML = '大きい';
+      } else {
+        highLow.innerHTML = '小さい';
+      }
+    }
+
+    function changeType(string) {
+      return Number(string);
+    }
+
+    function changeNuber() {
+      left.innerHTML = random * random;
+    }
+
+    function checkHighLow() {//ここをもっといい感じで書きたい
+      selectNumber = changeType(this.innerHTML);
+      if (highLowStatus) {
+        if(comparisonNumber < selectNumber) {
+          correctCount++;
+          correct.innerHTML = correctCount;
+        } else {
+          incorrectCount++;
+          incorrect.innerHTML = incorrectCount;
+        }
+      } else {
+        if(comparisonNumber > selectNumber) {
+          comparison.innerHTML = selectNumber;
+          correctCount++;
+          correct.innerHTML = correctCount;
+        } else {
+          incorrectCount++;
+          incorrect.innerHTML = incorrectCount;
+        }
+      }
+    }
+
+    left.addEventListener('click', checkHighLow);
+    left.addEventListener('click', changeNumber);
+    left.addEventListener('click', changeHighLow);
+    left.addEventListener('click', createNumber);
+
+    easy.addEventListener('click', changeLevel);
+    normal.addEventListener('click', changeLevel);
+    hard.addEventListener('click', changeLevel);
+  }
+</script>
+<style>
+  .question {
+    width: 50vw;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    font-size: 2vw;
+  }
+  .comments {
+    width: 50vw;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    font-size: 1.5vw;
+  }
+  .content {
+    width: 50vw;
+    margin: 0 auto;
+  }
+  .content-inner {
+    width: 50vw;
+    display: flex;
+    justify-content: space-between;
+  }
+  .card {
+    width: calc(100%/3);
+    height: 200px;
+    border: 2px solid  #bbb;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    text-align: center;
+    color: #555;
+    font-size: 2vw;
+    font-weight: bold;
+    line-height: 18vw;
+  }
+  .card:not(:last-child) {
+    margin-right: 10px;
+  }
+  .card-selectItem {
+    cursor: pointer;
+  }
+  .result {
+    width: 50vw;
+    margin: 0 auto;
+    font-size: 2vw;
+  }
+  .level {
+    width: 50vw;
+    margin: 0 auto;
+    font-size: 2vw;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+  }
+  .level-item {
+    border: 2px solid  #bbb;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .level-item:not(:last-child) {
+    margin-right: 10px;
+  }
+  .level-selected {
+    background-color: #ccc;
+  }
+  .btn-content {
+    width: calc(100%/3);
+  }
+  .btn {
+    padding: 5px;
+    border: 2px solid  #bbb;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    height: 81px;
+  }
+  .btn:not(:last-child) {
+    margin-bottom: 10px;
+  }
+  .btn:hover {
+    background-color: #ccc;
+  }
+</style>
+<body>
+  <div class='level'>
+    <p id='level-easy' class='level-item level-selected'>Easy</p>
+    <p id='level-normal' class='level-item'>Normal</p>
+    <p id='level-hard' class='level-item'>Hard</p>
+  </div>
+  <p class='question'>「<span id='comparison-number'></span>」よりも数字の<span id='high-low'></span>方を選択してください</p>
+  <p class='comments'>※値が同じ場合は「低い」を選択してください</p>
+  <div class='content'>
+    <div class='content-inner'>
+      <div id='left' class='card card-selectItem'></div>
+      <div class='btn-content'>
+        <div class='btn'>high</div>
+        <div class='btn'>low</div>
+      </div>
+      <!-- <div id='right' class='card card-selectItem'></div> -->
+    </div>
+  </div>
+  <p class='result'>正解：<spna id='correct'>0</spna></p>
+  <p class='result'>不正解：<spna id='incorrect'>0</spna></p>
+</body>
+</html>
